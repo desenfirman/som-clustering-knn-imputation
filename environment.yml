@@ -1,0 +1,11 @@
+name: som-clustering-knn-imputation
+channels:
+  - defaults
+
+dependencies:
+  - python>=3.6
+  - flask
+  - pip
+  - pip:
+    - flask-sijax
+    - python-dotenv
