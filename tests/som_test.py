@@ -1,11 +1,6 @@
 from main_algorithm import self_organizing_maps
+import tests
 from pandas import DataFrame as df
-
-
-# helper function
-def is_almost_equal(number_a, number_b, digit_tolerance):
-    eps = 10 ** -digit_tolerance
-    return abs(number_a / number_b - 1) < eps
 
 
 # test case function
@@ -15,7 +10,7 @@ def test_normalize_data():
         ["TUNA SUSILA", "ANAK BALITA TERLANTAR"], axis=1)
     input_dataset = manualisasi_df.iloc[:, :].values
     normalized_data = self_organizing_maps.normalize_data(input_dataset)
-    assert is_almost_equal(normalized_data[0][2], 0.09961686, 5)
+    assert tests.is_almost_equal(normalized_data[0][2], 0.09961686, 5)
 
 
 def test_init_som_net():
@@ -47,12 +42,12 @@ def test_training():
         dataset_input, weight, 3, 0.5, 0.5)
 
     # som weight testing
-    assert is_almost_equal(trained_weight[0][0][0], 0.86263723, 5)
-    assert is_almost_equal(trained_weight[0][1][1], 0.45358939, 5)
-    assert is_almost_equal(trained_weight[1][0][2], 0.39544198, 5)
-    assert is_almost_equal(trained_weight[1][1][1], 0.07578458, 5)
-    assert is_almost_equal(trained_weight[0][1][2], 0.16242615, 5)
-    assert is_almost_equal(trained_weight[0][0][1], 0.97424479, 5)
+    assert tests.is_almost_equal(trained_weight[0][0][0], 0.86263723, 5)
+    assert tests.is_almost_equal(trained_weight[0][1][1], 0.45358939, 5)
+    assert tests.is_almost_equal(trained_weight[1][0][2], 0.39544198, 5)
+    assert tests.is_almost_equal(trained_weight[1][1][1], 0.07578458, 5)
+    assert tests.is_almost_equal(trained_weight[0][1][2], 0.16242615, 5)
+    assert tests.is_almost_equal(trained_weight[0][0][1], 0.97424479, 5)
 
 
 def test_clustering():
@@ -82,9 +77,9 @@ def test_quantization_error():
             [0.09307897, 0.07578458, 0.27788371]   # neuron 1,1
         ]]
     dataset_input = list()
-    qe_score = self_organizing_maps.penentuan_cluster(
+    qe_score = self_organizing_maps.quantization_error(
         trained_weight, dataset_input)
-    assert is_almost_equal(qe_score, 0.0766537, 5)
+    assert tests.is_almost_equal(qe_score, 0.0766537, 5)
 
 
 def test_davies_bouldin_index():
@@ -101,4 +96,4 @@ def test_davies_bouldin_index():
     cluster_result = list()
     dbi_score = self_organizing_maps.davies_bouldin_index(
         dataset_input, cluster_result, trained_weight)
-    assert is_almost_equal(dbi_score, 0.08981, 5)
+    assert tests.is_almost_equal(dbi_score, 0.08981, 5)

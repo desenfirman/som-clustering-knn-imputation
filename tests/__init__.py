@@ -5,3 +5,10 @@ from os.path import abspath
 
 root_dir = d(d(abspath(__file__)))
 sys.path.append(root_dir)
+
+
+# helper function
+def is_almost_equal(number_a, number_b, digit_tolerance):
+    eps = 10 ** -digit_tolerance
+    return abs(number_a / number_b - 1) < eps
+    
