@@ -1,0 +1,19 @@
+image: continuumio/miniconda3:latest
+
+stages:
+  - test
+
+before_script:
+  - conda env create -f environment.yml
+
+som_test:
+  stage: test
+
+  script:
+    - pytest tests/som_test.py
+
+knn_imputation_test:
+  stage: test
+
+  script:
+    - pytest tests/knn_imputation_test.py
