@@ -5,6 +5,7 @@ stages:
 
 before_script:
   - conda env create -f environment.yml
+  - source activate som-clustering-knn-imputation
 
 som_test:
   stage: test
