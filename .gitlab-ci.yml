@@ -1,11 +1,16 @@
 image: continuumio/miniconda3:latest
 
 stages:
+  - preparation
   - test
+  - report
 
-before_script:
-  - conda env create -f environment.yml
-  - source activate som-clustering-knn-imputation
+preparing_environment:
+  stage: preparation
+
+  script:
+    - conda env create -f environment.yml
+    - source activate som-clustering-knn-imputation
 
 som_test:
   stage: test
@@ -18,3 +23,9 @@ knn_imputation_test:
 
   script:
     - pytest tests/knn_imputation_test.py
+
+reporting:
+  stage: report
+
+  script:
+    - nosetests --with-coverage --cover-erase --cover-package=tests/ --cover-html
