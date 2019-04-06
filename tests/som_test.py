@@ -23,7 +23,11 @@ def test_init_som_net():
 
 
 def test_training():
-    dataset_input = list()
+    dataset_input = [
+        [0.0310458, 0.0996169, 0.336344],
+        [0.8088235, 0.9923372, 0.1495946],
+        [0.8937908, 1, 0.0493175]
+    ]
     weight = [
         [
             [0.8940559, 0.7651827, 0.2653192],  # neuron 0,0
@@ -60,13 +64,18 @@ def test_clustering():
             [0.43933853, 0.94946919, 0.39544198],  # neuron 1,0
             [0.09307897, 0.07578458, 0.27788371]   # neuron 1,1
         ]]
-    input_data_1 = list()
+    input_data_1 = [0.0310458, 0.0996169, 0.336344]
     test_1 = self_organizing_maps.penentuan_cluster(
         trained_weight, input_data_1)
     assert test_1[0] == 1 and test_1[1] == 1
 
 
 def test_quantization_error():
+    dataset_input = [
+        [0.0310458, 0.0996169, 0.336344],
+        [0.8088235, 0.9923372, 0.1495946],
+        [0.8937908, 1, 0.0493175]
+    ]
     trained_weight = [
         [
             [0.86263723, 0.97424479, 0.1071898],  # neuron 0,0
@@ -76,7 +85,6 @@ def test_quantization_error():
             [0.43933853, 0.94946919, 0.39544198],  # neuron 1,0
             [0.09307897, 0.07578458, 0.27788371]   # neuron 1,1
         ]]
-    dataset_input = list()
     qe_score = self_organizing_maps.quantization_error(
         trained_weight, dataset_input)
     assert tests.is_almost_equal(qe_score, 0.0766537, 5)
