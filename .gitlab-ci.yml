@@ -15,11 +15,15 @@ preparing_environment:
 som_test:
   stage: test
 
+  dependencies: preparing_environment
+
   script:
     - pytest tests/som_test.py
 
 knn_imputation_test:
   stage: test
+
+  dependencies: preparing_environment
 
   script:
     - pytest tests/knn_imputation_test.py
