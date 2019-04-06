@@ -11,9 +11,6 @@ stages:
 som_test:
   stage: test
 
-  dependencies: 
-    - preparing_environment
-
   script:
     - pytest tests/som_test.py
 
