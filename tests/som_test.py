@@ -1,14 +1,21 @@
-import self_organizing_maps
-import pandas as pd
+from main_algorithm import self_organizing_maps
+from pandas import DataFrame as df
 
 
+# helper function
 def is_almost_equal(number_a, number_b, digit_tolerance):
     eps = 10 ** -digit_tolerance
     return abs(number_a / number_b - 1) < eps
 
 
+# test case function
 def test_normalize_data():
-    return 0
+    manualisasi_df = df.from_csv("dataset_used/manualisasi.csv")
+    manualisasi_df = manualisasi_df.drop(
+        ["TUNA SUSILA", "ANAK BALITA TERLANTAR"], axis=1)
+    input_dataset = manualisasi_df.iloc[:, :].values
+    normalized_data = self_organizing_maps.normalize_data(input_dataset)
+    assert is_almost_equal(normalized_data[0][2], 0.09961686, 5)
 
 
 def test_init_som_net():
