@@ -91,6 +91,11 @@ def test_quantization_error():
 
 
 def test_davies_bouldin_index():
+    dataset_input = [
+        [0.0310458, 0.0996169, 0.336344],
+        [0.8088235, 0.9923372, 0.1495946],
+        [0.8937908, 1, 0.0493175]
+    ]
     trained_weight = [
         [
             [0.86263723, 0.97424479, 0.1071898],  # neuron 0,0
@@ -100,8 +105,6 @@ def test_davies_bouldin_index():
             [0.43933853, 0.94946919, 0.39544198],  # neuron 1,0
             [0.09307897, 0.07578458, 0.27788371]   # neuron 1,1
         ]]
-    dataset_input = list()
-    cluster_result = list()
     dbi_score = self_organizing_maps.davies_bouldin_index(
-        dataset_input, cluster_result, trained_weight)
-    assert tests.is_almost_equal(dbi_score, 0.08981, 5)
+        dataset_input, trained_weight)
+    assert tests.is_almost_equal(dbi_score, 0.0728676497137748, 5)
