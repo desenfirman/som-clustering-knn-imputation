@@ -12,11 +12,12 @@ def impute_dataset(input_dataset, K):
             if isnan(input_dataset[row][attr]):
                 sorted_dist = get_sorted_distance_group(
                     input_dataset, (row, attr))
+                sorted_dist = sorted_dist[:K]
 
                 sum_imp = 0
-                for idk in range(0, K):
-                    b = sorted_dist[idk][1]
-                    sum_imp += input_dataset[b][attr]
+                for a, b, dist in sorted_dist:
+                    # wk = 1 / (dist ** 2)
+                    sum_imp += (input_dataset[b][attr])
                 new_val = sum_imp / K
             imputed_dataset_attr.append(new_val)
         imputed_dataset.append(imputed_dataset_attr)
@@ -29,7 +30,7 @@ def get_sorted_distance_group(input_dataset, index_data):
     attr = index_data[1]
     pair_dist_list = list()
     for x in range(0, len(input_dataset)):
-        if not isnan(input_dataset[x][attr]):
+        if not isnan(input_dataset[x][attr]) and x != row:
             pair_dist_list.append((row, x))
 
     dist = list()

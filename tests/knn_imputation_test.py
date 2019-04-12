@@ -11,6 +11,8 @@ def test_knn_imputation():
     assert tests.is_almost_equal(imputed_dataset[0][5], 6701, 5)
     assert tests.is_almost_equal(imputed_dataset[0][2], 6, 5)
     assert tests.is_almost_equal(imputed_dataset[9][5], 1108, 5)
+    assert tests.is_almost_equal(imputed_dataset[9][0], 188.333, 5)
+    assert tests.is_almost_equal(imputed_dataset[3][2], 32, 5)
 
 
 def test_get_sorted_distance_group():
@@ -25,3 +27,8 @@ def test_get_sorted_distance_group():
     ex_dist_2 = knn_imputation.get_sorted_distance_group(
         input_dataset, ex_data_2)
     assert tests.is_almost_equal(ex_dist_2[0][2], 1.11810708991569, 5)
+
+    ex_data_3 = (4, 2)
+    ex_dist_3 = knn_imputation.get_sorted_distance_group(
+        input_dataset, ex_data_3)
+    assert len(ex_dist_3) == 9
