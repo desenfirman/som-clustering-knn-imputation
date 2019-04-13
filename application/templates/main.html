@@ -17,11 +17,11 @@
                 <h3>Parameter KNN Missing Value Imputation</h3>
                 <div class="input-group" id="parameter_knn_group">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input id="without_knn" type="radio" name="knn_param" class="custom-control-input">
+                        <input id="without_knn" type="radio" name="knn_param" class="custom-control-input" checked="checked" onclick="knn_param_handler(this)">
                         <label for="without_knn" class="custom-control-label">Tidak menggunakan pengisian data kosong KNN</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input id="with_knn" type="radio" name="knn_param" class="custom-control-input">
+                        <input id="with_knn" type="radio" name="knn_param" class="custom-control-input" onclick="knn_param_handler(this)">
                         <label for="with_knn" class="custom-control-label">Menggunakan pengisian data kosong KNN</label>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">K = </span>
                     </div>
-                    <input type="number" class="form-control" name="k_value" placeholder="Masukkan nilai K" aria-label="K">
+                    <input id="k_input" type="number" class="form-control" name="k_value" placeholder="Masukkan nilai K" aria-label="K" value="0" readonly="readonly">
                 </div>
             </div>
             <br>
@@ -40,29 +40,29 @@
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label"> Jumlah Neuron</label>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control" name="neuron_width">
+                        <input required type="number" min="0" step="1" max="15" class="form-control" name="neuron_width">
                     </div>
                     <span class="col-form-label">X</span>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control" name="neuron_height">
+                        <input required type="number" min="0" step="1" max="15" class="form-control" name="neuron_height">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label"> Nilai alpha</label>
                     <div class="col-sm-10">
-                        <input type="number" class="form-control" name="alpha">
+                        <input required type="number" min="0.0001" step="0.0001"  class="form-control" name="alpha">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label"> Nilai eta</label>
                     <div class="col-sm-10">
-                        <input type="number" class="form-control" name="eta">
+                        <input required type="number" min="0.0001" step="0.0001"  class="form-control" name="eta">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label"> Jumlah epoch</label>
                     <div class="col-sm-10">
-                        <input type="number" class="form-control" name="epoch">
+                        <input required type="number" min="1" step="1" class="form-control" name="epoch">
                     </div>
                 </div>
             </div>
@@ -72,7 +72,7 @@
                 <h3>Pengukuran yang digunakan</h3>
                 <div class="input-group" id="parameter_knn_group">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input id="qe" type="radio" name="pengukuran" value="qe" class="custom-control-input">
+                        <input id="qe" type="radio" name="pengukuran" value="qe" class="custom-control-input" checked="">
                         <label for="qe" class="custom-control-label">Quantization Error</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
@@ -88,3 +88,16 @@
             </div>
         </form>
 {% endblock %}
+{% block script_on_footer %}
+    <script type="text/javascript">
+        function knn_param_handler(dom_this_object) {
+            if (dom_this_object.getAttribute("id") == 'without_knn') {
+                $('#k_input').val(0);
+                $("#k_input").prop('readonly', true);
+            }
+            if (dom_this_object.getAttribute("id") == 'with_knn') {
+                $('#k_input').prop('readonly', false);
+            }
+        }
+    </script>
+{% endblock%}
