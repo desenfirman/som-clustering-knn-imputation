@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="">
+    <div class="container-fluid">
+        <h3>Parameter Nilai</h3>
+        <div class="row">
+            <div class="col-sm-4">K (KNN Missing Value)</div>
+            <div class="col-sm-8">:&nbsp;{{ data['k_value'] }}</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">Jumlah neuron</div>
+            <div class="col-sm-8">:&nbsp;{{ data['neuron_width'] }} X {{ data['neuron_height'] }}</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">Nilai alpha</div>
+            <div class="col-sm-8">:&nbsp;{{ data['alpha'] }}</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">Nilai eta</div>
+            <div class="col-sm-8">:&nbsp;{{ data['eta'] }}</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">Total epoch</div>
+            <div class="col-sm-8">:&nbsp;{{ data['epoch'] }}</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">Tipe pengukuran</div>
+            <div class="col-sm-8">:&nbsp;{{ data['tipe_pengukuran'] }}</div>
+        </div>
+    </div>
+    <br>
+    <div class="container-fluid">
+        <h3>Log Training</h3>
+        <div class="form-group">
+            <textarea class="form-control" id="log_training" rows="3"></textarea>
+        </div>
+    </div>
+    <br>
+    <div class="container-fluid">
+        <h3>Cluster Terbentuk</h3>
+    </div>
+    <br>
+    <div class="container-fluid">
+        <h3>Daftar Cluster</h3>
+    </div>
+	<br>
+    <div class="container-fluid">
+        <div class="row">
+            <h4 class="offset-sm-8 col-sm-1">Skor</h4>
+            <h4 class="col-sm-3">:</h4>
+        </div>
+    </div>
+</div>
+{% endblock %}

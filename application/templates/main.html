@@ -1,31 +1,13 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title></title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-</head>
-
-<body>
-    <div class="container">
-        <br>
-    </div>
-    <div class="container">
-        <div class="container-fluid">
-            <h1>Clustering Self-Organizing Maps dengan Pengisian Data Kosong KNN</h1>
-        </div>
-        <hr>
-        <form action="">
+{% extends "base.html" %}
+{% block content %}
+        <form action="clustering" method="POST">
             <!-- input dataset -->
             <div class="container-fluid">
                 <h3>Input Dataset</h3>
                 <div class="input-group" id="input_dataset_group">
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="input_dataset">
+                        <input type="file" class="custom-file-input btn btn-outline-success" id="input_dataset">
                         <label for="input_dataset" class="custom-file-label">Choose file</label>
-                    </div>
-                    <div class="input-group-append">
-                        <div class="btn btn-outline-success">Upload</div>
                     </div>
                 </div>
             </div>
@@ -48,7 +30,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">K = </span>
                     </div>
-                    <input type="number" class="form-control" placeholder="Masukkan nilai K" aria-label="K">
+                    <input type="number" class="form-control" name="k_value" placeholder="Masukkan nilai K" aria-label="K">
                 </div>
             </div>
             <br>
@@ -58,29 +40,29 @@
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label"> Jumlah Neuron</label>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control">
+                        <input type="number" class="form-control" name="neuron_width">
                     </div>
                     <span class="col-form-label">X</span>
                     <div class="col-sm-2">
-                        <input type="number" class="form-control">
+                        <input type="number" class="form-control" name="neuron_height">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label"> Nilai alpha</label>
                     <div class="col-sm-10">
-                        <input type="number" class="form-control">
+                        <input type="number" class="form-control" name="alpha">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label"> Nilai eta</label>
                     <div class="col-sm-10">
-                        <input type="number" class="form-control">
+                        <input type="number" class="form-control" name="eta">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label"> Jumlah epoch</label>
                     <div class="col-sm-10">
-                        <input type="number" class="form-control">
+                        <input type="number" class="form-control" name="epoch">
                     </div>
                 </div>
             </div>
@@ -90,31 +72,19 @@
                 <h3>Pengukuran yang digunakan</h3>
                 <div class="input-group" id="parameter_knn_group">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input id="qe" type="radio" name="pengukuran" class="custom-control-input">
+                        <input id="qe" type="radio" name="pengukuran" value="qe" class="custom-control-input">
                         <label for="qe" class="custom-control-label">Quantization Error</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input id="dbi" type="radio" name="pengukuran" class="custom-control-input">
+                        <input id="dbi" type="radio" name="pengukuran" value="dbi" class="custom-control-input">
                         <label for="dbi" class="custom-control-label">Davies-Bouldin Index</label>
                     </div>
                 </div>
             </div>
             <br>
+            <!-- submit button -->
             <div class="container-fluid">
                 <button type="submit" style="width: 100%" class="btn btn-primary">Mulai Clustering</button>
             </div>
         </form>
-        <br>
-    </div>
-    <footer style="bottom: 0; width: 100%; height: 60px; line-height: 60px; background-color: #f5f5f5;">
-        <div class="container"><span class="text-muted">
-                Copyright © 2019
-            </span>
-        </div>
-    </footer>
-</body>
-<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-
-</html>
+{% endblock %}
