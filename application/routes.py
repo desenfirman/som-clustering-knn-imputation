@@ -16,6 +16,8 @@ def home():
 def mulai_clustering():
     data = dict()
     if request.method == 'POST':
+        f = request.files['input_dataset']
+        data['input_dataset_filename'] = f.filename
         data['k_value'] = request.form['k_value']
         data['neuron_width'] = request.form['neuron_width']
         data['neuron_height'] = request.form['neuron_height']

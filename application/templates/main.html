@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-        <form action="clustering" method="POST">
+        <form action="clustering" method="POST" enctype="multipart/form-data">
             <!-- input dataset -->
             <div class="container-fluid">
                 <h3>Input Dataset</h3>
                 <div class="input-group" id="input_dataset_group">
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input btn btn-outline-success" id="input_dataset">
+                        <input required="" type="file" accept=".csv" name="input_dataset" class="custom-file-input btn btn-outline-success" id="input_dataset">
                         <label for="input_dataset" class="custom-file-label">Choose file</label>
                     </div>
                 </div>
@@ -99,5 +99,15 @@
                 $('#k_input').prop('readonly', false);
             }
         }
+        function onfileselected() {
+            // body...
+        }
+         $('#input_dataset').on('change',function(){
+                //get the file name
+                var fileName = $(this).val();
+                var fileName = fileName.replace(/^.*\\/, "");
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(fileName);
+            })
     </script>
 {% endblock%}
