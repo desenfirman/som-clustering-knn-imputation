@@ -15,3 +15,5 @@ build/
 \.cache/v/cache/
 
 *.csv#
+
+flask_session/

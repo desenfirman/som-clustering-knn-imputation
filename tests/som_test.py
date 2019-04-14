@@ -106,5 +106,5 @@ def test_davies_bouldin_index():
             [0.09307897, 0.07578458, 0.27788371]   # neuron 1,1
         ]]
     dbi_score = self_organizing_maps.davies_bouldin_index(
-        dataset_input, trained_weight)
+        trained_weight, dataset_input)
     assert tests.is_almost_equal(dbi_score, 0.0728676497137748, 5)

@@ -52,34 +52,39 @@ def get_dist_data_from_neur(trained_weight, input_data):
     return dist_data_to_neur
 
 
+def one_epoch_training(dataset_input, trained_weight, alpha_t, eta_t):
+    for row in range(0, len(dataset_input)):
+
+            # find best-matching-unit neuron
+        dist_data_to_neur = get_dist_data_from_neur(
+            trained_weight, dataset_input[row])
+        dist_sorted = sorted(dist_data_to_neur, key=lambda x: x[1])
+        c = dist_sorted[0][0]  # access tuple of neuron index
+
+        # weight update
+        for neur_i in range(0, len(trained_weight)):
+            for neur_j in range(0, len(trained_weight[neur_i])):
+                for attr in range(0, len(trained_weight[neur_i][neur_j])):
+                    dist_rij_rc = sqrt(
+                        (neur_i - c[0])**2 + (neur_j - c[1])**2)
+                    hij = alpha_t * exp(-1 * (dist_rij_rc)**2 / (
+                        2 * (eta_t**2)))
+                    input_to_w_old = (dataset_input[row][
+                        attr] - trained_weight[neur_i][neur_j][attr])
+                    new_weight = (trained_weight[neur_i][neur_j][
+                        attr] + (hij * input_to_w_old))
+                    trained_weight[neur_i][neur_j][attr] = new_weight
+    return trained_weight
+
+
 def training(dataset_input, input_weight, max_epoch, alpha_0, eta_0):
     trained_weight = input_weight
 
     for t in range(1, max_epoch + 1):
         alpha_t = alpha_0 * (1 / t)
         eta_t = eta_0 * exp(-1 * (t / max_epoch))
-
-        for row in range(0, len(dataset_input)):
-
-            # find best-matching-unit neuron
-            dist_data_to_neur = get_dist_data_from_neur(
-                trained_weight, dataset_input[row])
-            dist_sorted = sorted(dist_data_to_neur, key=lambda x: x[1])
-            c = dist_sorted[0][0]  # access tuple of neuron index
-
-            # weight update
-            for neur_i in range(0, len(trained_weight)):
-                for neur_j in range(0, len(trained_weight[neur_i])):
-                    for attr in range(0, len(trained_weight[neur_i][neur_j])):
-                        dist_rij_rc = sqrt(
-                            (neur_i - c[0])**2 + (neur_j - c[1])**2)
-                        hij = alpha_t * exp(-1 * (dist_rij_rc)**2 / (
-                            2 * (eta_t**2)))
-                        input_to_w_old = (dataset_input[row][
-                            attr] - trained_weight[neur_i][neur_j][attr])
-                        new_weight = (trained_weight[neur_i][neur_j][
-                            attr] + (hij * input_to_w_old))
-                        trained_weight[neur_i][neur_j][attr] = new_weight
+        trained_weight = one_epoch_training(
+            dataset_input, trained_weight, alpha_t, eta_t)
 
     return trained_weight
 
@@ -116,7 +121,7 @@ def get_pairs_of_cls(clust_size):
     return cls_d_list
 
 
-def davies_bouldin_index(dataset_input, trained_weight):
+def davies_bouldin_index(trained_weight, dataset_input):
     cluster_result = dict()
     cls_list = list()
     for idx, x_data in enumerate(dataset_input):

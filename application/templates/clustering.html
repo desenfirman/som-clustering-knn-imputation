@@ -5,31 +5,31 @@
         <h3>Parameter Nilai</h3>
         <div class="row">
             <div class="col-sm-4">Input dataset filename</div>
-            <div class="col-sm-8">:&nbsp;{{ data['input_dataset_filename'] }}</div>
+            <div class="col-sm-8">:&nbsp;{{ session['input_dataset_filename'] }}</div>
         </div>
         <div class="row">
             <div class="col-sm-4">K (KNN Missing Value)</div>
-            <div class="col-sm-8">:&nbsp;{{ data['k_value'] }}</div>
+            <div class="col-sm-8">:&nbsp;{{ session['k_value'] }}</div>
         </div>
         <div class="row">
             <div class="col-sm-4">Jumlah neuron</div>
-            <div class="col-sm-8">:&nbsp;{{ data['neuron_width'] }} X {{ data['neuron_height'] }}</div>
+            <div class="col-sm-8">:&nbsp;{{ session['neuron_width'] }} X {{ session['neuron_height'] }}</div>
         </div>
         <div class="row">
             <div class="col-sm-4">Nilai alpha</div>
-            <div class="col-sm-8">:&nbsp;{{ data['alpha'] }}</div>
+            <div class="col-sm-8">:&nbsp;{{ session['alpha_0'] }}</div>
         </div>
         <div class="row">
             <div class="col-sm-4">Nilai eta</div>
-            <div class="col-sm-8">:&nbsp;{{ data['eta'] }}</div>
+            <div class="col-sm-8">:&nbsp;{{ session['eta_0'] }}</div>
         </div>
         <div class="row">
             <div class="col-sm-4">Total epoch</div>
-            <div class="col-sm-8">:&nbsp;{{ data['epoch'] }}</div>
+            <div class="col-sm-8">:&nbsp;{{ session['max_epoch'] }}</div>
         </div>
         <div class="row">
             <div class="col-sm-4">Tipe pengukuran</div>
-            <div class="col-sm-8">:&nbsp;{{ data['tipe_pengukuran'] }}</div>
+            <div class="col-sm-8">:&nbsp;{{ session['tipe_pengukuran'] }}</div>
         </div>
     </div>
     <br>
@@ -46,13 +46,40 @@
     <br>
     <div class="container-fluid">
         <h3>Daftar Cluster</h3>
+        <div id="daftar_cluster">{{ session['weight'] }}</div>
     </div>
-	<br>
+    <br>
     <div class="container-fluid">
         <div class="row">
-            <h4 class="offset-sm-5 col-sm-4">Skor {{ data['tipe_pengukuran'] }}</h4>
-            <h4 class="col-sm-3">:</h4>
+            <h4 class="offset-sm-5 col-sm-4">Skor {{ session['tipe_pengukuran'] }}</h4>
+            <h4 id="skor_akhir" class="col-sm-3"></h4>
         </div>
     </div>
 </div>
+{% endblock %}
+{% block script_on_head %}
+<script type="text/javascript">
+
+
+
+
+var max_epoch = '{{ session["max_epoch"] }}';
+var source = new EventSource("/training_progress");
+source.onmessage = function(event) {
+    // console.log(event.data);
+    var streamed = JSON.parse(event.data);
+    console.log(streamed);
+    var log = 'Epoch: ' + streamed.epoch +
+        ', ' +
+        'Skor ' + streamed.jenis +
+        ': ' + streamed.score + '\n';
+    var new_log = $('#log_training').val() + log;
+    $('#log_training').val(new_log);
+    $('#daftar_cluster').html(streamed.weight);
+    if (streamed.epoch == max_epoch) {
+        source.close();
+        $('#skor_akhir').html(streamed.score);
+    }
+}
+</script>
 {% endblock %}
