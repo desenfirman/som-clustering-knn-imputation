@@ -42,6 +42,7 @@
     <br>
     <div class="container-fluid">
         <h3>Cluster Terbentuk</h3>
+        <div id="cluster_visualization"></div>
     </div>
     <br>
     <div class="container-fluid">
@@ -58,28 +59,32 @@
 </div>
 {% endblock %}
 {% block script_on_head %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/p5.min.js') }}"></script>
+{% include "cluster_visualization.html" %}
 <script type="text/javascript">
+    var max_epoch = '{{ session["max_epoch"] }}';
+    var source = new EventSource("/training_progress");
+    let count = 0
 
-
-
-
-var max_epoch = '{{ session["max_epoch"] }}';
-var source = new EventSource("/training_progress");
-source.onmessage = function(event) {
-    // console.log(event.data);
-    var streamed = JSON.parse(event.data);
-    console.log(streamed);
-    var log = 'Epoch: ' + streamed.epoch +
-        ', ' +
-        'Skor ' + streamed.jenis +
-        ': ' + streamed.score + '\n';
-    var new_log = $('#log_training').val() + log;
-    $('#log_training').val(new_log);
-    $('#daftar_cluster').html(streamed.weight);
-    if (streamed.epoch == max_epoch) {
-        source.close();
-        $('#skor_akhir').html(streamed.score);
+    source.onmessage = function(event) {
+        var streamed = JSON.parse(event.data);
+        console.log(streamed);
+        var log = 'Epoch: ' + streamed.epoch +
+            ', ' +
+            'Skor ' + streamed.jenis +
+            ': ' + streamed.score + '\n';
+        var new_log = $('#log_training').val() + log;
+        cluster_data = streamed.cluster;
+        if (count == 0) {
+            push_cluster_data_to_neuron();
+        }
+        $('#log_training').val(new_log);
+        $('#daftar_cluster').html(streamed.weight);
+        if (streamed.epoch == max_epoch) {
+            source.close();
+            $('#skor_akhir').html(streamed.score);
+        }
+        count++;
     }
-}
 </script>
 {% endblock %}

@@ -1,0 +1,124 @@
+<script>
+
+let cluster_data = [];
+
+let datas_in_neuron = [];
+neuron_row = {{ session['neuron_height'] }};
+neuron_col = {{ session['neuron_width'] }}
+x = 30;
+y = 30;
+gaps = 10;
+diameter = 30;
+easing = 0.04;
+speed = 0;
+xspeed = 5;
+yspeed = 5;
+x_dir = 1;
+y_dir = 1;
+
+function push_cluster_data_to_neuron() {
+    for (let i = 0; i < cluster_data.length; i++) {
+        datas_in_neuron.push({ "id": cluster_data[i].id, "neuron": new DataInNeuron(cluster_data[i].id, cluster_data[i].neuron[0], cluster_data[i].neuron[1]) });
+    }
+}
+
+function setup() {
+    var canvas = createCanvas(1100, 1100);
+
+    canvas.parent('cluster_visualization');
+}
+
+function draw() {
+    background(255);
+
+
+    for (let i = 0; i < neuron_row; i++) {
+        for (let j = 0; j < neuron_col; j++) {
+            circle(((2 * x + gaps) * (j + 1)), ((2 * y + gaps) * (i + 1)), diameter);
+        }
+    }
+
+
+
+
+    for (let i = 0; i < datas_in_neuron.length; i++){
+    	datas_in_neuron[i].neuron.move_to_neuron(cluster_data[i].neuron[0], cluster_data[i].neuron[1]);
+    	datas_in_neuron[i].neuron.display();
+  	}
+
+}
+
+
+// Jitter class
+class DataInNeuron {
+    constructor(text, x, y) {
+        this.x = 70 * (floor(random() * neuron_col) + 1);
+        this.y = 70 * (floor(random() * neuron_row) + 1);
+        textSize(10);
+        this.text = text;
+    }
+
+    get_x(){
+    	return this.x;
+    }
+
+    get_y(){
+    	return this.y;
+    }
+
+ 
+    move_to_neuron(x, y){
+	    // speed = (speed > 360)? 0 : speed + 1*0.001;
+	    
+	    let dest_x = 70 * (x+1);
+	    let dest_y = 70 * (y+1);
+	    let dx = dest_x - this.x;
+	    let dy = dest_y - this.y;
+	    // translate(width/2,height/2);
+
+	    this.x += dx * easing;
+	    this.y += dy * easing;
+
+
+	    this.x += random(-1, +1);
+	    this.y += random(-1, +1);
+
+
+	    // this.x += (xspeed * x_dir);
+	    // this.y += (yspeed * y_dir);
+
+
+	    // if (this.x  > (this.x - 10) || this.x < 10){
+	    // 	x_dir *= -1;
+	    // }
+	    // if (this.y  > (this.y - 10) || this.y < 10){
+	    // 	y_dir *= -1;
+	    // }
+
+	    // this.x = this.x + (1) * cos(random(speed));
+	    // this.y = this.y + (1) * sin(random(speed));
+
+
+
+	    // for (var i = 0; i < datas_in_neuron.length; i++) {
+	    // 	var text_obj = datas_in_neuron[i];
+	    // 	for (var j = 0; j < datas_in_neuron.length; j++) {
+	    // 		if (i != j){
+	    // 			var text_othr = datas_in_neuron[j];
+	    // 			var d = dist(text_obj.get_x(), text_obj.get_y(), text_othr.get_x(), text_othr.get_y());
+	    // 			if(d < 30){
+	    // 				// this one is overlapping, so do function that not overlapping
+	    // 			}
+	    // 		}
+	    // 	}
+	    // }
+	    
+        textAlign(CENTER, CENTER);
+
+	  }
+
+    display() {
+    	text(this.text, this.x, this.y);
+    }
+}
+</script>
