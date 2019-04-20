@@ -1,20 +1,32 @@
 <script>
 
-let cluster_data = [];
+var cluster_data = [];
 
 let datas_in_neuron = [];
+let width, height, x, y, gaps, diameter;
+var canvas;
 neuron_row = {{ session['neuron_height'] }};
-neuron_col = {{ session['neuron_width'] }}
-x = 30;
-y = 30;
-gaps = 10;
-diameter = 30;
+neuron_col = {{ session['neuron_width'] }};
 easing = 0.04;
 speed = 0;
-xspeed = 5;
-yspeed = 5;
+xspeed = 10;
+yspeed = 10;
 x_dir = 1;
 y_dir = 1;
+
+
+function resizeCanvasMatchWidth(isCreateCanvas){
+	width = $('#cluster_vis_parent')[0].clientWidth;
+    height = width = width * 11/12;
+    x = y = diameter = width / ( neuron_col * 3);
+    gaps = width / ( neuron_col * 2.8);
+
+    if (isCreateCanvas) {
+    	canvas = createCanvas(width, height);
+    } else {
+    	resizeCanvas(width, height);
+    }
+}
 
 function push_cluster_data_to_neuron() {
     for (let i = 0; i < cluster_data.length; i++) {
@@ -23,55 +35,55 @@ function push_cluster_data_to_neuron() {
 }
 
 function setup() {
-    var canvas = createCanvas(1100, 1100);
+    // var canvas = createCanvas(width, height);
+    isCreateCanvas = true;
+    resizeCanvasMatchWidth(isCreateCanvas);
+	$(window).resize(function() {
+		isCreateCanvas = false;
+    	resizeCanvasMatchWidth(isCreateCanvas);
+		// width = $('#cluster_vis_parent')[0].clientWidth;
+		// height = width = width * 11/12;
+		// resizeCanvas(width, height);
+	});
 
+    canvas.style += 'display: block;';
     canvas.parent('cluster_visualization');
 }
 
 function draw() {
     background(255);
 
-
     for (let i = 0; i < neuron_row; i++) {
         for (let j = 0; j < neuron_col; j++) {
-            circle(((2 * x + gaps) * (j + 1)), ((2 * y + gaps) * (i + 1)), diameter);
+            circle(((1.5 * x + gaps) * (j+0.6)), ((1.5 * y + gaps) * (i+0.6)), diameter);
         }
     }
-
-
-
 
     for (let i = 0; i < datas_in_neuron.length; i++){
     	datas_in_neuron[i].neuron.move_to_neuron(cluster_data[i].neuron[0], cluster_data[i].neuron[1]);
     	datas_in_neuron[i].neuron.display();
   	}
-
 }
 
 
 // Jitter class
 class DataInNeuron {
     constructor(text, x, y) {
-        this.x = 70 * (floor(random() * neuron_col) + 1);
-        this.y = 70 * (floor(random() * neuron_row) + 1);
-        textSize(10);
+    	this.pos_offset = 1.5 * diameter + gaps;
+        this.x = this.pos_offset * (floor(random() * neuron_col) + 1);
+        this.y = this.pos_offset * (floor(random() * neuron_row) + 1);
+        textSize(12);
         this.text = text;
     }
 
-    get_x(){
-    	return this.x;
-    }
-
-    get_y(){
-    	return this.y;
-    }
-
  
-    move_to_neuron(x, y){
+    move_to_neuron(row, col){
 	    // speed = (speed > 360)? 0 : speed + 1*0.001;
-	    
-	    let dest_x = 70 * (x+1);
-	    let dest_y = 70 * (y+1);
+	    let x = col;
+	    let y = row;
+    	this.pos_offset = 1.5 * diameter + gaps;
+	    let dest_x = this.pos_offset * (x+0.6);
+	    let dest_y = this.pos_offset * (y+0.6);
 	    let dx = dest_x - this.x;
 	    let dy = dest_y - this.y;
 	    // translate(width/2,height/2);
@@ -80,12 +92,12 @@ class DataInNeuron {
 	    this.y += dy * easing;
 
 
-	    this.x += random(-1, +1);
-	    this.y += random(-1, +1);
+	    this.x += random(-1, +1) * 0.5;
+	    this.y += random(-1, +1) * 0.5;
 
 
-	    // this.x += (xspeed * x_dir);
-	    // this.y += (yspeed * y_dir);
+	    // this.x += random(-xspeed, xspeed);
+	    // this.y += random(-yspeed, yspeed);
 
 
 	    // if (this.x  > (this.x - 10) || this.x < 10){
@@ -97,21 +109,6 @@ class DataInNeuron {
 
 	    // this.x = this.x + (1) * cos(random(speed));
 	    // this.y = this.y + (1) * sin(random(speed));
-
-
-
-	    // for (var i = 0; i < datas_in_neuron.length; i++) {
-	    // 	var text_obj = datas_in_neuron[i];
-	    // 	for (var j = 0; j < datas_in_neuron.length; j++) {
-	    // 		if (i != j){
-	    // 			var text_othr = datas_in_neuron[j];
-	    // 			var d = dist(text_obj.get_x(), text_obj.get_y(), text_othr.get_x(), text_othr.get_y());
-	    // 			if(d < 30){
-	    // 				// this one is overlapping, so do function that not overlapping
-	    // 			}
-	    // 		}
-	    // 	}
-	    // }
 	    
         textAlign(CENTER, CENTER);
 

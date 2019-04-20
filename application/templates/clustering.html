@@ -34,15 +34,19 @@
     </div>
     <br>
     <div class="container-fluid">
-        <h3>Log Training</h3>
-        <div class="form-group">
-            <textarea class="form-control" id="log_training" rows="3"></textarea>
+        <div class="row">
+            <div class="col-sm-6" id="cluster_vis_parent">
+                <h3>Cluster Terbentuk</h3>
+                <div style="display: inline-block;" id="cluster_visualization"></div>
+            </div>
+            <br>
+            <div class="col-sm-6">
+                <h3>Log Training</h3>
+                <div class="form-group">
+                    <textarea class="form-control" id="log_training" rows="20" style="height: 100%;"></textarea>
+                </div>
+            </div>
         </div>
-    </div>
-    <br>
-    <div class="container-fluid">
-        <h3>Cluster Terbentuk</h3>
-        <div id="cluster_visualization"></div>
     </div>
     <br>
     <div class="container-fluid">
@@ -61,10 +65,12 @@
 {% block script_on_head %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/p5.min.js') }}"></script>
 {% include "cluster_visualization.html" %}
+{% include "cluster_result.html" %}
 <script type="text/javascript">
+
     var max_epoch = '{{ session["max_epoch"] }}';
     var source = new EventSource("/training_progress");
-    let count = 0
+    let count = 0;
 
     source.onmessage = function(event) {
         var streamed = JSON.parse(event.data);
@@ -79,7 +85,8 @@
             push_cluster_data_to_neuron();
         }
         $('#log_training').val(new_log);
-        $('#daftar_cluster').html(streamed.weight);
+        document.getElementById("log_training").scrollTop = document.getElementById("log_training").scrollHeight;
+        show_cluster_list();
         if (streamed.epoch == max_epoch) {
             source.close();
             $('#skor_akhir').html(streamed.score);

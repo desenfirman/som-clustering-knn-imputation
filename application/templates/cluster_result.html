@@ -1,0 +1,33 @@
+<style type="text/css">
+	.table th, .table td { 
+     border-top: none !important; 
+ }
+</style>
+<script type="text/javascript">
+	function show_cluster_list() {
+		let cluster_list = {};
+
+		for (let i = 0; i < cluster_data.length; i++) {
+			let key = "("+cluster_data[i].neuron[0]+', '+ cluster_data[i].neuron[1] + ")";
+			if (!cluster_list.hasOwnProperty(key)){
+				cluster_list[key] = [];
+			}
+			cluster_list[key].push(cluster_data[i].id);
+		}
+
+		let table = "<div class='table-responsive'><table class='table table-borderless '>";
+		let span_factor = 4;
+		table += "<thead class='thead-dark'><tr><th scope='col'>Cluster ID</td><th scope='col' colspan='" + span_factor + "'>Cluster Member</td></tr></thead><tbody>";
+		for (let key in cluster_list) {
+		    table += "<tr rowspan='" + cluster_list[key].length % 4 + "'><th scope='row'>" + key + "</th>";
+		    for (var i = 0; i < cluster_list[key].length; i++) {
+		    	table += (i % 4 == 0 && i > 0) ? "<tr><td></td>" : "";
+		    	table += "<td>" + cluster_list[key][i] + "</td>";
+		    }
+		    table += "</tr>";
+		}
+		table += "</tbody></table></div>";
+		console.log(cluster_list);
+	    $('#daftar_cluster').html(table);
+	}
+</script>
