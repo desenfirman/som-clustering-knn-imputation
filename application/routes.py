@@ -29,13 +29,16 @@ def extract_dataset(file):
 @mod.route('/clustering', methods=['GET', 'POST'])
 def mulai_clustering():
     if request.method == 'POST':
+        session['k_value'] = int(request.form['k_value'])
+
         file_handler = request.files['input_dataset']
         dataset_unnormalized = extract_dataset(file_handler)
+        dataset_unnormalized = knn_imputation.impute_dataset(
+            dataset_unnormalized, session['k_value'])
         session['dataset'] = self_organizing_maps.normalize_data(
             dataset_unnormalized)
 
         session['input_dataset_filename'] = file_handler.filename
-        session['k_value'] = int(request.form['k_value'])
         session['neuron_width'] = int(request.form['neuron_width'])
         session['neuron_height'] = int(request.form['neuron_height'])
         session['alpha_0'] = float(request.form['alpha'])
