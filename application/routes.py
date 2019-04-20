@@ -55,11 +55,8 @@ def mulai_clustering():
         attr_size = len(session['dataset'][0])
         session['weight'] = self_organizing_maps.init_som_net(
             session['neuron_height'], session['neuron_width'], attr_size)
-
-        first_JSON_data = cluster_visualization_in_JSON(
-            session['weight'], session['dataset'])
-
-        return render_template("clustering.html", first_JSON_data = first_JSON_data)
+        # pprint(session['dataset'])
+        return render_template("clustering.html")
     else:
         return redirect(url_for('main.home'))
 
@@ -94,7 +91,7 @@ def training_progress():
             session['weight'] = self_organizing_maps.one_epoch_training(
                 session['dataset'], session['weight'], alpha_t, eta_t)
             t += 1
-            time.sleep(1.25)
+            time.sleep(1)
 
     return Response(training(), content_type='text/event-stream')
 
