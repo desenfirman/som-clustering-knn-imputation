@@ -6,7 +6,10 @@ from pprint import pprint
 
 def impute_dataset(input_dataset, K):
     imputed_dataset = list()
+    pair_dist_list = get_dist_pair(input_dataset)
     for row in range(0, len(input_dataset)):
+        filtered_pair_dist_list = [(x, y, dist) if x == row else (y, x, dist) for (x, y, dist) in pair_dist_list if x == row or y == row]
+        sorted_dist = sorted(filtered_pair_dist_list, key=lambda x: x[2])
         imputed_dataset_attr = list()
         for attr in range(0, len(input_dataset[row])):
             new_val = input_dataset[row][attr]
@@ -14,14 +17,18 @@ def impute_dataset(input_dataset, K):
                 if K == 0:
                     imputed_dataset_attr.append(0)
                     continue
-                sorted_dist = get_sorted_distance_group(
-                    input_dataset, (row, attr))
-                sorted_dist = sorted_dist[:K]
+                pprint(filtered_pair_dist_list)
 
                 sum_imp = 0
+                count = 0
                 for a, b, dist in sorted_dist:
                     # wk = 1 / (dist ** 2)
+                    if isnan(input_dataset[b][attr]):
+                        continue
                     sum_imp += (input_dataset[b][attr])
+                    count += 1
+                    if count == K:
+                        break
                 new_val = sum_imp / K
             imputed_dataset_attr.append(new_val)
         imputed_dataset.append(imputed_dataset_attr)
@@ -29,14 +36,13 @@ def impute_dataset(input_dataset, K):
     return imputed_dataset
 
 
-def get_sorted_distance_group(input_dataset, index_data):
-    # pprint("hi")
-    row = index_data[0]
-    attr = index_data[1]
+def get_dist_pair(input_dataset):
     pair_dist_list = list()
-    for x in range(0, len(input_dataset)):
-        if not isnan(input_dataset[x][attr]) and x != row:
-            pair_dist_list.append((row, x))
+    for i in range(0, len(input_dataset)):
+        for j in range(0, len(input_dataset)):
+            if i != j:
+                if (i, j) not in pair_dist_list and (j, i) not in pair_dist_list:
+                    pair_dist_list.append((i, j))
 
     dist = list()
     inverted_input_data = list(map(list, zip(*input_dataset)))
@@ -55,5 +61,5 @@ def get_sorted_distance_group(input_dataset, index_data):
             sum_sq += sq_dist
         euc_dist = sqrt(sum_sq)
         dist.append((a, b, euc_dist))
-    dist_sorted = sorted(dist, key=lambda x: x[2])
-    return dist_sorted
+    # pprint(dist)
+    return dist
