@@ -1,6 +1,7 @@
 from math import isnan
 from math import sqrt
 from pandas import DataFrame as df
+from pprint import pprint
 
 
 def impute_dataset(input_dataset, K):
@@ -10,6 +11,9 @@ def impute_dataset(input_dataset, K):
         for attr in range(0, len(input_dataset[row])):
             new_val = input_dataset[row][attr]
             if isnan(input_dataset[row][attr]):
+                if K == 0:
+                    imputed_dataset_attr.append(0)
+                    continue
                 sorted_dist = get_sorted_distance_group(
                     input_dataset, (row, attr))
                 sorted_dist = sorted_dist[:K]
@@ -26,6 +30,7 @@ def impute_dataset(input_dataset, K):
 
 
 def get_sorted_distance_group(input_dataset, index_data):
+    # pprint("hi")
     row = index_data[0]
     attr = index_data[1]
     pair_dist_list = list()
