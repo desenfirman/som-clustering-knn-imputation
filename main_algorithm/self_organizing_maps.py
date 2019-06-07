@@ -135,44 +135,142 @@ def davies_bouldin_index(trained_weight, dataset_input):
     clust_size = len(cls_list)
     attr_size = len(dataset_input[0])
 
+    # build centroid data
+    cluster_centroid_list = dict()
+    for id_neuron, cluster_member in cluster_result.items():
+        centroid = list()
+        for attr in range(0, attr_size):
+            avg_data = 0
+            for x in cluster_member:
+                avg_data += dataset_input[x][attr]
+            avg_data /= len(cluster_member)
+            centroid.append(avg_data)
+        cluster_centroid_list[id_neuron] = centroid
+
     rmax = list()
     for i, el_1 in cluster_result.items():
         row_1, col_1 = tuple(i.split(';')[:-1])
-        average_s1 = 0
-        for attr_1 in range(0, attr_size):
-            sum_s = 0
-            for x in el_1:
-                sum_s += ((dataset_input[x][
-                    attr_1] - trained_weight[
-                    int(row_1)][int(col_1)][attr_1]) ** 2)
-            s1 = sqrt((1 / len(el_1)) * sum_s)
-            average_s1 += s1
-        average_s1 = average_s1 / attr_size
+
+        if len(el_1) == 1:
+            continue
+
+        s1 = 0
+        for member in el_1:
+            # search distance of each data
+            x_sq_dist = 0
+            for attr_1 in range(0, attr_size):
+                x_sq_dist += ((dataset_input[member][
+                    attr_1] - cluster_centroid_list[i][attr_1]) ** 2)
+            s1 += sqrt(x_sq_dist)
+        s1 = s1 / len(el_1)
+
+        # average_s1 = 0
+        # for attr_1 in range(0, attr_size):
+        #     sum_s = 0
+        #     for x in el_1:
+        #         sum_s += ((dataset_input[x][
+        #             attr_1] - trained_weight[
+        #             int(row_1)][int(col_1)][attr_1]) ** 2)
+        #     s1 = sqrt((1 / len(el_1)) * sum_s)
+        #     average_s1 += s1
+        # average_s1 = average_s1 / attr_size
         r = list()
         for j, el_2 in cluster_result.items():
             if i != j:
                 row_2, col_2 = tuple(j.split(';')[:-1])
-                average_s2 = 0
-                for attr_2 in range(0, attr_size):
-                    sum_s = 0
-                    for x in el_2:
-                        sum_s += ((dataset_input[x][attr_2] - trained_weight[
-                            int(row_2)][int(col_2)][attr_2]) ** 2)
-                    s2 = sqrt((1 / len(el_2)) * sum_s)
-                    average_s2 += s2
-                average_s2 = average_s2 / attr_size
+
+                if len(el_2) == 1:
+                    continue
+
+                s2 = 0
+                for member in el_2:
+                    # search distance of each data
+                    x_sq_dist = 0
+                    for attr_2 in range(0, attr_size):
+                        x_sq_dist += ((dataset_input[member][
+                            attr_2] - cluster_centroid_list[j][attr_2]) ** 2)
+                    s2 += sqrt(x_sq_dist)
+                s2 = s2 / len(el_1)
+
+                # average_s2 = 0
+                # for attr_2 in range(0, attr_size):
+                #     sum_s = 0
+                #     for x in el_2:
+                #         sum_s += ((dataset_input[x][attr_2] - trained_weight[
+                #             int(row_2)][int(col_2)][attr_2]) ** 2)
+                #     s2 = sqrt((1 / len(el_2)) * sum_s)
+                #     average_s2 += s2
+                # average_s2 = average_s2 / attr_size
 
                 dist = 0
                 for attr_3 in range(0, attr_size):
-                    attr_dist = ((trained_weight[int(row_1)][int(col_1)][
-                        attr_3] - trained_weight[int(row_2)][
-                        int(col_2)][attr_3]) ** 2)
+                    attr_dist = ((cluster_centroid_list[
+                        i][attr_3] - cluster_centroid_list[j][attr_3]) ** 2)
                     dist += attr_dist
                 dist = sqrt(dist)
 
-                r_val = (average_s1 + average_s2) / dist
+                r_val = (s1 + s2) / dist
                 r.append(r_val)
+
+        if len(r) == 0:
+            print('notice: rmax is empty sequence, set to 0')
+            r = [0]
         rmax.append(max(r))
 
-    dbi = sum(rmax) / clust_size
+    dbi = sum(rmax) / len(rmax)
     return dbi
+
+
+def distance(dataset_input, data_point_a, data_point_b):
+    dist = 0
+    for attr in range(0, len(dataset_input[data_point_a])):
+        dist += (dataset_input[data_point_a][attr] - dataset_input[
+            data_point_b][attr]) ** 2
+    return sqrt(dist)
+
+
+def silhouette(trained_weight, dataset_input):
+    cluster_result = dict()
+    cls_list = list()
+    for idx, x_data in enumerate(dataset_input):
+        c = penentuan_cluster(trained_weight, x_data)
+        cls_id = str(c[0]) + ';' + str(c[1]) + ';'
+        if cls_id not in cls_list:
+            cls_list.append(cls_id)
+            cluster_result[cls_id] = list()
+        cluster_result[cls_id].append(idx)
+
+    silhouette_score_data = dict()
+    avg = 0
+    for ci_id, ci in cluster_result.items():
+        silhouette_cluster = dict()
+        for i in ci:
+            a = 0
+            for j in ci:
+                if i != j:
+                    a += distance(dataset_input, i, j)
+            a = 0 if (len(ci) <= 1) else (a / (len(ci) - 1))
+
+            cj_other_cluster = list()
+            for cj_id, cj in cluster_result.items():
+                if ci_id != cj_id:
+                    b_temp = 0
+                    for j in cj:
+                        b_temp += distance(dataset_input, i, j)
+                    b_temp = b_temp / len(cj)
+                    cj_other_cluster.append(b_temp)
+            b = min(cj_other_cluster)
+            sil = 0 if (len(ci) <= 1) else (b - a) / max([a, b])
+            avg += sil
+            silhouette_cluster[i] = sil
+            print("Silhouette data", i, "Cluster ", ci_id, ":", sil)
+        silhouette_score_data[ci_id] = silhouette_cluster
+        print("-------------------------------------------------------")
+    avg /= len(dataset_input)
+    silhouette_score_data['avg'] = avg
+    return silhouette_score_data
+
+
+def average_silhouette(trained_weight, dataset_input):
+    sil_data = silhouette(trained_weight, dataset_input)
+    return sil_data['avg']
