@@ -7,11 +7,12 @@ from multiprocessing import Pool
 def impute_dataset(input_dataset, K):
     imputed_dataset = list()
     pair_dist_list = get_dist_pair(input_dataset)
-    print(pair_dist_list)
+    # print(pair_dist_list)
     for row in range(0, len(input_dataset)):
-        filtered_pair_dist_list = [(
-            x, y, dist) if x == row else (y, x, dist) for (
-            x, y, dist) in pair_dist_list if x == row or y == row]
+        filtered_pair_dist_list = [
+            (x, y, dist) if x == row else (y, x, dist)
+            for (x, y, dist) in pair_dist_list if x == row or y == row
+        ]
         sorted_dist = sorted(filtered_pair_dist_list, key=lambda x: x[2])
         imputed_dataset_attr = list()
         for attr in range(0, len(input_dataset[row])):
@@ -37,19 +38,21 @@ def impute_dataset(input_dataset, K):
 
     return imputed_dataset
 
+
 def get_dist_pair(input_dataset):
     pair_dist_list = list()
     for i in range(0, len(input_dataset)):
         for j in range(0, len(input_dataset)):
-            if i != j:
-                if (i, j) not in pair_dist_list and (j, i) not in pair_dist_list:
+            if ((i != j) and
+                    ((i, j) not in pair_dist_list) and
+                    ((j, i) not in pair_dist_list)):
                     pair_dist_list.append((i, j))
 
     with Pool() as pool:
-        dist = pool.starmap(get_euclidian_dist, [(input_dataset, a, b) for a, b in pair_dist_list])
+        dist = pool.starmap(get_euclidian_dist, [
+                            (input_dataset, a, b) for a, b in pair_dist_list])
         pool.close()
         pool.join()
-    # pprint(dist)
     return dist
 
 
