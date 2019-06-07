@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 {% block content %}
 <form action="clustering" method="POST" enctype="multipart/form-data">
@@ -92,8 +93,7 @@
 <script type="text/javascript">
 function knn_param_handler(dom_this_object) {
     if (dom_this_object.getAttribute("id") == 'without_knn') {
-        $('#k_input').val(0);
-        $("#k_input").prop('readonly', true);
+        $('#k_input').val(0).prop('readonly', true);
     }
     if (dom_this_object.getAttribute("id") == 'with_knn') {
         $('#k_input').prop('readonly', false);
