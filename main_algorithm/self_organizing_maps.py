@@ -1,6 +1,7 @@
 import random as rd
 from math import exp
 from math import sqrt
+import sys
 
 
 def normalize_data(input_data):
@@ -85,6 +86,9 @@ def training(dataset_input, input_weight, max_epoch, alpha_0, eta_0):
         eta_t = eta_0 * exp(-1 * (t / max_epoch))
         trained_weight = one_epoch_training(
             dataset_input, trained_weight, alpha_t, eta_t)
+        print("Progress: {0}% QE:{1}".format(
+            (float(t) / max_epoch) * 100, quantization_error(
+                trained_weight, dataset_input)), end='\r', flush=True)
 
     return trained_weight
 
@@ -263,9 +267,10 @@ def silhouette(trained_weight, dataset_input):
             sil = 0 if (len(ci) <= 1) else (b - a) / max([a, b])
             avg += sil
             silhouette_cluster[i] = sil
-            print("Silhouette data", i, "Cluster ", ci_id, ":", sil)
-        silhouette_score_data[ci_id] = silhouette_cluster
-        print("-------------------------------------------------------")
+            # print("Silhouette data", i, "Cluster ", ci_id, ":", sil)
+        silhouette_score_data[ci_id] = sorted(
+            silhouette_cluster.items(), key=lambda x: x[1])
+        # print("-------------------------------------------------------")
     avg /= len(dataset_input)
     silhouette_score_data['avg'] = avg
     return silhouette_score_data
