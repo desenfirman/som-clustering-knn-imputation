@@ -44,13 +44,6 @@ def mulai_clustering():
         session['alpha_0'] = float(request.form['alpha'])
         session['eta_0'] = float(request.form['eta'])
         session['max_epoch'] = int(request.form['epoch'])
-        if request.form['pengukuran'] == 'qe':
-            session['tipe_pengukuran'] = 'Quantization Error'
-        elif request.form['pengukuran'] == 'dbi':
-            session['tipe_pengukuran'] = 'Davies-Bouldin Index'
-
-        # start session
-        session['pengukuran'] = request.form['pengukuran']
 
         attr_size = len(session['dataset'][0])
         session['weight'] = self_organizing_maps.init_som_net(
@@ -82,7 +75,7 @@ def training_progress():
                 str(get_score(session['weight'],
                               session['dataset'])) + ', '
             jenis_pengukuran_response = '"jenis":"' + \
-                str(session['tipe_pengukuran']) + '" '
+                str('Avg Silhouette Coefficient') + '" '
 
             yield "data: {" + epoch_t_response + weight_response + \
                 cluster_vis_t_response + \
@@ -91,7 +84,9 @@ def training_progress():
             session['weight'] = self_organizing_maps.one_epoch_training(
                 session['dataset'], session['weight'], alpha_t, eta_t)
             t += 1
-            time.sleep(1)
+            self_organizing_maps.silhouette_visualizer(session['weight'], session['dataset'])
+            time.sleep(0.5)
+
 
     return Response(training(), content_type='text/event-stream')
 
@@ -112,7 +107,18 @@ def cluster_visualization_in_JSON(training_weight, input_dataset):
 
 
 def get_score(weight, dataset_input):
-    if session['pengukuran'] == "qe":
-        return self_organizing_maps.quantization_error(weight, dataset_input)
-    elif session['pengukuran'] == "dbi":
-        return self_organizing_maps.davies_bouldin_index(weight, dataset_input)
+    sil = self_organizing_maps.average_silhouette(weight, dataset_input)
+    return sil
+
+
+@mod.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r

@@ -86,8 +86,8 @@ def training(dataset_input, input_weight, max_epoch, alpha_0, eta_0):
         eta_t = eta_0 * exp(-1 * (t / max_epoch))
         trained_weight = one_epoch_training(
             dataset_input, trained_weight, alpha_t, eta_t)
-        print("Progress: {0}% QE:{1}".format(
-            (float(t) / max_epoch) * 100, quantization_error(
+        print("Progress: {0}% AVG Silhouette Score:{1}".format(
+            (float(t) / max_epoch) * 100, average_silhouette(
                 trained_weight, dataset_input)), end='\r', flush=True)
 
     return trained_weight
@@ -279,3 +279,44 @@ def silhouette(trained_weight, dataset_input):
 def average_silhouette(trained_weight, dataset_input):
     sil_data = silhouette(trained_weight, dataset_input)
     return sil_data['avg']
+
+
+def silhouette_visualizer(trained_weight, dataset):
+    silhouette_res = silhouette(trained_weight, dataset)
+    import matplotlib.pyplot as plt
+    import random as rd
+    fig, ax = plt.subplots(figsize=(6, 4), dpi=80)
+
+    x = list()
+    y = list()
+
+    cmap = list()
+    bcmap = list()
+    count = 1
+    for idj, cluster in silhouette_res.items():
+        if idj != 'avg':
+            r, g, b = (rd.random(), rd.random(), rd.random())
+            random_color = (r, g, b, 1)
+            random_bcolor = (r, g, b, 0.4)
+            for i in cluster:
+                x.append(i[1])
+                y.append(count)
+                cmap.append(random_color)
+                bcmap.append(random_bcolor)
+                count += 1
+
+    ax.barh(y, x, color=cmap)
+    ax.barh(y, [1] * len(dataset), color=bcmap)
+    ax.get_yaxis().set_ticks([])
+    ax.axvline(silhouette_res['avg'], ls='--', color='r')
+    plt.text(silhouette_res['avg'], len(dataset) + 5, 'avg silhouette: ' + str(round(silhouette_res['avg'], 2)))
+    title = 'Silhouette Result of ' + str(len(silhouette_res) - 1) + ' Cluster(s)\n\n'
+    plt.title(title)
+    plt.xlabel('Silhouette Score')
+    plt.ylabel('Input dataset')
+
+    import os
+    strFile = "application/static/img/plot.png"
+    if os.path.isfile(strFile):
+        os.remove(strFile)   # Opt.: os.system("rm "+strFile)
+    plt.savefig(strFile)
