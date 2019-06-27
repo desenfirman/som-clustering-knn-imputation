@@ -61,6 +61,8 @@ def training_progress():
         t = 1
 
         while(t <= session['max_epoch']):
+            if t == session['max_epoch']:
+                self_organizing_maps.silhouette_visualizer(session['weight'], session['dataset'])
             alpha_t = session['alpha_0'] * (1 / t)
             eta_t = session['eta_0'] * exp(-1 * (t / session['max_epoch']))
 
@@ -84,7 +86,6 @@ def training_progress():
             session['weight'] = self_organizing_maps.one_epoch_training(
                 session['dataset'], session['weight'], alpha_t, eta_t)
             t += 1
-            self_organizing_maps.silhouette_visualizer(session['weight'], session['dataset'])
             time.sleep(0.5)
 
 
