@@ -23,20 +23,9 @@ def test_no_knn_imputation():
     assert tests.is_almost_equal(imputed_dataset[9][0], 0, 5)
 
 
-def test_get_sorted_distance_group():
+def test_get_dist_pair():
     manualisasi_df = df.from_csv('dataset_used/manualisasi.csv')
     input_dataset = manualisasi_df.iloc[:, :].values
-    ex_data = (0, 0)
-    ex_dist_1 = knn_imputation.get_sorted_distance_group(
-        input_dataset, ex_data)
-    assert tests.is_almost_equal(ex_dist_1[0][2], 2.00291292625085, 5)
-
-    ex_data_2 = (1, 1)
-    ex_dist_2 = knn_imputation.get_sorted_distance_group(
-        input_dataset, ex_data_2)
-    assert tests.is_almost_equal(ex_dist_2[0][2], 1.11810708991569, 5)
-
-    ex_data_3 = (4, 2)
-    ex_dist_3 = knn_imputation.get_sorted_distance_group(
-        input_dataset, ex_data_3)
-    assert len(ex_dist_3) == 9
+    ex_dist_1 = knn_imputation.get_dist_pair(
+        input_dataset)
+    assert tests.is_almost_equal(len(ex_dist_1), 45, 5)

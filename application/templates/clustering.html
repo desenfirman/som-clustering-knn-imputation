@@ -31,6 +31,14 @@
             <div class="col-sm-4">Tipe pengukuran</div>
             <div class="col-sm-8">:&nbsp;{{ session['tipe_pengukuran'] }}</div>
         </div>
+        <div class="row">
+            <div class="container">
+                <div class="progress" style="width: 100%;">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                </div>
+            </div>
+        </div>
+
     </div>
     <br>
     <div class="container-fluid">
@@ -74,7 +82,7 @@
 
     source.onmessage = function(event) {
         var streamed = JSON.parse(event.data);
-        console.log(streamed);
+        // console.log(streamed);
         var log = 'Epoch: ' + streamed.epoch +
             ', ' +
             'Skor ' + streamed.jenis +
@@ -87,6 +95,9 @@
         $('#log_training').val(new_log);
         document.getElementById("log_training").scrollTop = document.getElementById("log_training").scrollHeight;
         show_cluster_list();
+        let percentage = Math.round(streamed.epoch / max_epoch * 100);
+        console.log(percentage);
+        $('.progress-bar').css('width', percentage+'%').attr('aria-valuenow', percentage).html(percentage + '%');   
         if (streamed.epoch == max_epoch) {
             source.close();
             $('#skor_akhir').html(streamed.score);
