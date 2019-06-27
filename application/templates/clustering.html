@@ -28,10 +28,6 @@
             <div class="col-sm-8">:&nbsp;{{ session['max_epoch'] }}</div>
         </div>
         <div class="row">
-            <div class="col-sm-4">Tipe pengukuran</div>
-            <div class="col-sm-8">:&nbsp;{{ session['tipe_pengukuran'] }}</div>
-        </div>
-        <div class="row">
             <div class="container">
                 <div class="progress" style="width: 100%;">
                   <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
@@ -63,11 +59,17 @@
     </div>
     <br>
     <div class="container-fluid">
+        <h3>Silhouette Graph</h3>
+        <div id="sil_graph"></div>
+    </div>
+    <br>
+    <div class="container-fluid">
         <div class="row">
-            <h4 class="offset-sm-5 col-sm-4">Skor {{ session['tipe_pengukuran'] }}</h4>
+            <h4 class="offset-sm-5 col-sm-4">Average Silhouette Coefficient: </h4>
             <h4 id="skor_akhir" class="col-sm-3"></h4>
         </div>
     </div>
+
 </div>
 {% endblock %}
 {% block script_on_head %}
@@ -101,6 +103,7 @@
         if (streamed.epoch == max_epoch) {
             source.close();
             $('#skor_akhir').html(streamed.score);
+            $('#sil_graph').html("<img class='img-fluid' src='/static/img/plot.png'>");
         }
         count++;
     }
