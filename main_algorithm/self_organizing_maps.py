@@ -246,6 +246,9 @@ def silhouette(trained_weight, dataset_input):
 
     silhouette_score_data = dict()
     avg = 0
+    if len(cluster_result) == 1:
+        silhouette_score_data['avg'] = -9999
+        return silhouette_score_data
     for ci_id, ci in cluster_result.items():
         silhouette_cluster = dict()
         for i in ci:
