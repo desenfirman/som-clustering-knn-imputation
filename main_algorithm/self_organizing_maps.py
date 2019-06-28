@@ -166,6 +166,11 @@ def silhouette_visualizer(trained_weight, dataset):
     silhouette_res = silhouette(trained_weight, dataset)
     import matplotlib.pyplot as plt
     import random as rd
+    import base64
+    from io import BytesIO
+
+    img = BytesIO()
+
     fig, ax = plt.subplots(figsize=(6, 4), dpi=80)
 
     x = list()
@@ -196,8 +201,12 @@ def silhouette_visualizer(trained_weight, dataset):
     plt.xlabel('Silhouette Score')
     plt.ylabel('Input dataset')
 
-    import os
-    strFile = "application/static/img/plot.png"
-    if os.path.isfile(strFile):
-        os.remove(strFile)   # Opt.: os.system("rm "+strFile)
-    plt.savefig(strFile)
+    plt.savefig(img, format='png')
+    plt.close()
+
+    img.seek(0)
+
+    base64_bytes = base64.b64encode(img.getvalue())
+
+    return base64_bytes.decode('utf-8')
+     # Opt.: os.system("rm "+strFile)

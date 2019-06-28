@@ -61,10 +61,14 @@ def training_progress():
         t = 1
 
         while(t <= session['max_epoch']):
+            plot_url = '0'
             if t == session['max_epoch']:
-                self_organizing_maps.silhouette_visualizer(session['weight'], session['dataset'])
+                plot_url = self_organizing_maps.silhouette_visualizer(session['weight'], session['dataset'])
             alpha_t = session['alpha_0'] * (1 / t)
             eta_t = session['eta_0'] * exp(-1 * (t / session['max_epoch']))
+
+            session['weight'] = self_organizing_maps.one_epoch_training(
+                session['dataset'], session['weight'], alpha_t, eta_t)
 
             cluster_visualization = cluster_visualization_in_JSON(
                 session['weight'], session['dataset'])
@@ -76,15 +80,15 @@ def training_progress():
             score_t_response = '"score": ' + \
                 str(get_score(session['weight'],
                               session['dataset'])) + ', '
+            plot_url_response = '"plot_url": "' + \
+                plot_url + '", '
             jenis_pengukuran_response = '"jenis":"' + \
                 str('Avg Silhouette Coefficient') + '" '
 
             yield "data: {" + epoch_t_response + weight_response + \
                 cluster_vis_t_response + \
-                score_t_response + jenis_pengukuran_response + "}\n\n"
+                score_t_response + plot_url_response + jenis_pengukuran_response + "}\n\n"
 
-            session['weight'] = self_organizing_maps.one_epoch_training(
-                session['dataset'], session['weight'], alpha_t, eta_t)
             t += 1
             time.sleep(0.5)
 

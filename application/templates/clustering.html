@@ -102,8 +102,9 @@
         $('.progress-bar').css('width', percentage+'%').attr('aria-valuenow', percentage).html(percentage + '%');   
         if (streamed.epoch == max_epoch) {
             source.close();
+            var plot_url = streamed.plot_url;
             $('#skor_akhir').html(streamed.score);
-            $('#sil_graph').html("<img class='img-fluid' src='/static/img/plot.png'>");
+            $('#sil_graph').html("<img class='img-fluid' src='data:image/png;base64, " + plot_url + "'>");
         }
         count++;
     }
