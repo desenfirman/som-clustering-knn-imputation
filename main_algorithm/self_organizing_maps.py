@@ -171,7 +171,7 @@ def silhouette_visualizer(trained_weight, dataset):
 
     img = BytesIO()
 
-    fig, ax = plt.subplots(figsize=(6, 4), dpi=80)
+    fig, ax = plt.subplots(figsize=(8, 6))
 
     x = list()
     y = list()

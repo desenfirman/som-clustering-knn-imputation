@@ -92,7 +92,6 @@ def training_progress():
             t += 1
             time.sleep(0.5)
 
-
     return Response(training(), content_type='text/event-stream')
 
 
