@@ -37,6 +37,9 @@ Source code for my undergraduate thesis — Region Grouping in East Java based o
 
 1. Open localhost:8000 from your browser
 2. Select your *.csv file that you want to be clustered.
+
+    ![Select your input file](https://i.imgur.com/wxqYQPB.gif)
+
 3. Input a algorithm parameter. In this app you need to input following parameter:
 
     ```text
@@ -47,18 +50,20 @@ Source code for my undergraduate thesis — Region Grouping in East Java based o
     Neuron Size     = 3x3, 4x4, 5x5 etc
     ```
 
+    ![Input parameter value](https://i.imgur.com/x6Cukz8.gif)
+
 4. After all parameter input is filled, click 'Mulai Clustering' to start clustering process.
 
 ## The result?
 
 As you can see, the app show clustering progress and report alongside cluster visualization from epoch through epoch.
 
+![Clustering progress & visualization](https://i.imgur.com/JCOM0II.gif)
+
 When clustering process is complete, you can see overall Silhouette Coefficient alongside with all member Silhouette Coefficient.
+
+![Clustering report](https://i.imgur.com/JCOM0II.gif)
 
 ## Credit(s)
 
 I don't built a webserver, built an array transformation algorithm or any code that doesn't relevant in my undergraduate thesis from scratch. You can check `environment.yml` to see what packages I used for this project.
-
-## Usage
-
-Yes, you can use some bunch of code in this repo to your personal project. Glad if you put a credit to this repo :)
