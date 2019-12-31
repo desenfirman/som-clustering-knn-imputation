@@ -62,7 +62,7 @@ As you can see, the app show clustering progress and report alongside cluster vi
 
 When clustering process is complete, you can see overall Silhouette Coefficient alongside with all member Silhouette Coefficient.
 
-![Clustering report](https://i.imgur.com/JCOM0II.gif)
+![Clustering report](https://i.imgur.com/MLzdDe8.gif)
 
 ## Credit(s)
 
